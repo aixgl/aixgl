@@ -6,20 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://aixgl.com">
-  <title>golang对共享内存的操作 | Hexo</title>
+  <title>golang对共享内存的操作 | Aixgl-艾辛阁</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="不同进程间的内存是互相独立的，没办法直接互相操作对方内的数据，而共享内存则是靠操作系统提供的内存映射机制，让不同进程的一块地址空间映射到同一个虚拟内存区域上，使不同的进程可以操作到一块共用的内存块。共享内存是效率最高的进程间通讯机制，因为数据不需要在内核和程序之间复制。 共享内存用到的是系统提供的mmap函数，它可以将一个文件映射到虚拟内存的一个区域中，程序使用指针引用这个区域，对这个内存区域的操">
 <meta property="og:type" content="article">
 <meta property="og:title" content="golang对共享内存的操作">
 <meta property="og:url" content="http://aixgl.com/2017/07/10/article1-post/index.html">
-<meta property="og:site_name" content="Hexo">
+<meta property="og:site_name" content="Aixgl-艾辛阁">
 <meta property="og:description" content="不同进程间的内存是互相独立的，没办法直接互相操作对方内的数据，而共享内存则是靠操作系统提供的内存映射机制，让不同进程的一块地址空间映射到同一个虚拟内存区域上，使不同的进程可以操作到一块共用的内存块。共享内存是效率最高的进程间通讯机制，因为数据不需要在内核和程序之间复制。 共享内存用到的是系统提供的mmap函数，它可以将一个文件映射到虚拟内存的一个区域中，程序使用指针引用这个区域，对这个内存区域的操">
 <meta property="og:updated_time" content="2017-07-10T02:55:32.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="golang对共享内存的操作">
 <meta name="twitter:description" content="不同进程间的内存是互相独立的，没办法直接互相操作对方内的数据，而共享内存则是靠操作系统提供的内存映射机制，让不同进程的一块地址空间映射到同一个虚拟内存区域上，使不同的进程可以操作到一块共用的内存块。共享内存是效率最高的进程间通讯机制，因为数据不需要在内核和程序之间复制。 共享内存用到的是系统提供的mmap函数，它可以将一个文件映射到虚拟内存的一个区域中，程序使用指针引用这个区域，对这个内存区域的操">
   
-    <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
+    <link rel="alternative" href="/atom.xml" title="Aixgl-艾辛阁" type="application/atom+xml">
   
   
     <link rel="icon" href="/favicon.png">
