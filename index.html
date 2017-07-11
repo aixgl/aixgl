@@ -151,6 +151,57 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-go-sync-pool" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/07/11/go-sync-pool/">golang 标准官方包的sync.Pool使用和适用场景分析</a>
+    </h1>
+  
+
+        
+        <a href="/2017/07/11/go-sync-pool/" class="archive-article-date">
+  	<time datetime="2017-07-11T11:47:08.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-11</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Go的协程和gc垃圾回收特性的确会提高程序的开发效率。但是毕竟是一门新语言，如果对于它的机制不了解，用起来可能会蹦出各种潘多拉盒子。今天就讲讲我在项目中用到的sync包的Pool类的使用，以免大家混淆使用。</p>
+<p>众所周知，go是自动垃圾回收的(garbage collector)，这大大减少了程序编程负担。但gc是一把双刃剑，带来了编程的方便但同时也增加了运行时开销，使用不当甚至会严重影响程序的性能。因此性能要求高的场景不能任意产生太多的垃圾（有gc但又不能完全依赖它挺恶心的），如何解决呢？那就是要重用对象了，我们可以简单的使用一个chan把这些可重用的对象缓存起来，但如果很多goroutine竞争一个chan性能肯定是问题…..由于golang团队认识到这个问题普遍存在，为了避免大家重造车轮，因此官方统一出了一个包Pool。但为什么放到sync包里面也是有的迷惑的，先不讨论这个问题。</p>
+        
+          <a class="article-more-a" href="/2017/07/11/go-sync-pool/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/07/11/go-sync-pool/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+  
     <article id="post-go-null-struct-optimize" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
