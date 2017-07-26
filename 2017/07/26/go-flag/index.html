@@ -6,14 +6,18 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://aixgl.com">
-  <title>Aixgl-艾辛阁</title>
+  <title>Golang flag包使用详解 | Aixgl-艾辛阁</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Aixgl-艾辛阁">
-<meta property="og:url" content="http://aixgl.com/index.html">
+  <meta name="description" content="go-flag 概述flag包提供了一系列解析命令行参数的功能接口 命令行语法命令行语法主要有以下几种形式 123-flag //只支持bool类型-flag=x-flag x //只支持非bool类型 以上语法对于一个或两个‘－’号，效果是一样的，但是要注意对于第三种情况，只支持非bool类型，原因是碰到如下情况时cmd -x  为0，false有可能表示一个文件名或文件，也有可能表示x标签的值">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Golang flag包使用详解">
+<meta property="og:url" content="http://aixgl.com/2017/07/26/go-flag/index.html">
 <meta property="og:site_name" content="Aixgl-艾辛阁">
+<meta property="og:description" content="go-flag 概述flag包提供了一系列解析命令行参数的功能接口 命令行语法命令行语法主要有以下几种形式 123-flag //只支持bool类型-flag=x-flag x //只支持非bool类型 以上语法对于一个或两个‘－’号，效果是一样的，但是要注意对于第三种情况，只支持非bool类型，原因是碰到如下情况时cmd -x  为0，false有可能表示一个文件名或文件，也有可能表示x标签的值">
+<meta property="og:updated_time" content="2017-07-26T05:18:13.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Aixgl-艾辛阁">
+<meta name="twitter:title" content="Golang flag包使用详解">
+<meta name="twitter:description" content="go-flag 概述flag包提供了一系列解析命令行参数的功能接口 命令行语法命令行语法主要有以下几种形式 123-flag //只支持bool类型-flag=x-flag x //只支持非bool类型 以上语法对于一个或两个‘－’号，效果是一样的，但是要注意对于第三种情况，只支持非bool类型，原因是碰到如下情况时cmd -x  为0，false有可能表示一个文件名或文件，也有可能表示x标签的值">
   
     <link rel="alternative" href="/atom.xml" title="Aixgl-艾辛阁" type="application/atom+xml">
   
@@ -149,16 +153,14 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-go-flag" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-go-flag" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/26/go-flag/">Golang flag包使用详解</a>
+    <h1 class="article-title" itemprop="name">
+      Golang flag包使用详解
     </h1>
   
 
@@ -177,113 +179,79 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">-flag //只支持bool类型</div><div class="line">-flag=x</div><div class="line">-flag x //只支持非bool类型</div></pre></td></tr></table></figure>
 <p>以上语法对于一个或两个‘－’号，效果是一样的，但是要注意对于第三种情况，只支持非bool类型，原因是碰到如下情况时<br>cmd -x <em>
 </em>为0，false有可能表示一个文件名或文件，也有可能表示x标签的值为0或false，会产生二义性，因此规定第三种只支持非bool类型。对于整形flag，合法的值可以为1234, 0664,0x1234或负数等。对于布尔型flag，可以为1, 0, t, f, T, F, true, false, TRUE, FALSE, True, False等</p>
-        
-          <a class="article-more-a" href="/2017/07/26/go-flag/#more">more >></a>
-        
+<a id="more"></a>
+<h2 id="命令行参数解析方法"><a href="#命令行参数解析方法" class="headerlink" title="命令行参数解析方法"></a>命令行参数解析方法</h2><p>使用flag主要包括以下几步</p>
+<ul>
+<li>定义flag参数，有三种方式</li>
+</ul>
+<p>通过flag.String(), Bool(), Int() 等flag.Xxx()方法，该种方式返回一个相应的指针</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">import &quot;flag&quot;</div><div class="line">var ip = flag.Int(&quot;flagname&quot;, 1234, &quot;help message for flagname&quot;)</div><div class="line">通过flag.XxxVar()方法将flag绑定到一个变量，该种方式返回值类型，如</div><div class="line">var flagvar int</div><div class="line">func init() &#123;</div><div class="line">    flag.IntVar(&amp;flagvar, &quot;flagname&quot;, 1234, &quot;help message for flagname&quot;)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>通过flag.Var()绑定自定义类型，自定义类型需要实现Value接口(Receives必须为指针)，如<br>flag.Var(&amp;flagVal, “name”, “help message for flagname”)<br>对于这种类型的flag，默认值为该变量类型的初始值</p>
+<ul>
+<li>调用flag.Parse()解析命令行参数到定义的flag<br>flag.Parse()<br>解析函数将会在碰到第一个非flag命令行参数时停止，非flag命令行参数是指不满足命令行语法的参数，如命令行参数为cmd –flag=true abc则第一个非flag命令行参数为“abc”</li>
+<li><p>调用Parse解析后，就可以直接使用flag本身(指针类型)或者绑定的变量了(值类型)</p>
+<pre><code>fmt.Println(&quot;ip has value &quot;, *ip)
+fmt.Println(&quot;flagvar has value &quot;, flagvar)
+</code></pre></li>
+</ul>
+<p>还可通过flag.Args(), flag.Arg(i)来获取非flag命令行参数</p>
+<ul>
+<li>如果需要每个函数的详细demo，可参见Gopkg:flag</li>
+</ul>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><ul>
+<li><p>示例1: 获取“species” flag的值，默认为“gopher”</p>
+<pre><code>var species = flag.String(&quot;species&quot;, &quot;gopher&quot;, &quot;the species we are studying&quot;)
+</code></pre></li>
+<li><p>示例2: 两个flag共享同一个变量，一般用于同时实现完整flag参数和对应简化版flag参数，需要注意初始化顺序和默认值</p>
+<pre><code>var gopherType string
+
+func init() {
+    const (
+        defaultGopher = &quot;pocket&quot;
+        usage         = &quot;the variety of gopher&quot;
+    )
+    flag.StringVar(&amp;gopherType, &quot;gopher_type&quot;, defaultGopher, usage)
+    flag.StringVar(&amp;gopherType, &quot;g&quot;, defaultGopher, usage+&quot;(shorthand)&quot;)
+}
+</code></pre></li>
+<li><p>示例3: 将flag绑定用户自定义类型。按我们先前所说，只需要实现Value接口，但实际上，如果需要取值的话，需要实现Getter接口，看下接口定义就明白了：</p>
+<pre><code>type Getter interface {
+    Value
+    Get(string) interface{}
+}
+type Value interface {
+    String() string
+    Set(string) error
+}
+</code></pre></li>
+</ul>
+<p>接下来，我们实现一个解析并格式化命令行输入的时间集合的例子，如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">package main</div><div class="line"></div><div class="line">import (</div><div class="line">  &quot;errors&quot;</div><div class="line">  &quot;flag&quot;</div><div class="line">  &quot;fmt&quot;</div><div class="line">  &quot;strings&quot;</div><div class="line">  &quot;time&quot;</div><div class="line">)</div><div class="line"></div><div class="line">type interval []time.Duration</div><div class="line"></div><div class="line">//实现String接口</div><div class="line">func (i *interval) String() string &#123;</div><div class="line">  return fmt.Sprintf(&quot;%v&quot;, *i)</div><div class="line">&#125;</div><div class="line"></div><div class="line">//实现Set接口,Set接口决定了如何解析flag的值</div><div class="line">func (i *interval) Set(value string) error &#123;</div><div class="line">    //此处决定命令行是否可以设置多次-deltaT</div><div class="line">  if len(*i) &gt; 0 &#123;</div><div class="line">    return errors.New(&quot;interval flag already set&quot;)</div><div class="line">  &#125;</div><div class="line">  for _, dt := range strings.Split(value, &quot;,&quot;) &#123;</div><div class="line">    duration, err := time.ParseDuration(dt)</div><div class="line">    if err != nil &#123;</div><div class="line">      return err</div><div class="line">    &#125;</div><div class="line">    *i = append(*i, duration)</div><div class="line">  &#125;</div><div class="line">  return nil</div><div class="line">&#125;</div><div class="line"></div><div class="line">var intervalFlag interval</div><div class="line"></div><div class="line">func init() &#123;</div><div class="line">  flag.Var(&amp;intervalFlag, &quot;deltaT&quot;, &quot;comma-separated list of intervals to use between events&quot;)</div><div class="line">&#125;</div><div class="line"></div><div class="line">func main() &#123;</div><div class="line">  flag.Parse()</div><div class="line">  fmt.Println(intervalFlag)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="运行结果："><a href="#运行结果：" class="headerlink" title="运行结果："></a>运行结果：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">//./commandLine -deltaT 61m,72h,80s</div><div class="line">[1h1m0s 72h0m0s 1m20s]</div></pre></td></tr></table></figure>
+
       
 
       
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/26/go-flag/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-go-sync-pool" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/11/go-sync-pool/">golang 标准官方包的sync.Pool使用和适用场景分析</a>
-    </h1>
-  
-
-        
-        <a href="/2017/07/11/go-sync-pool/" class="archive-article-date">
-  	<time datetime="2017-07-11T11:47:08.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-11</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Go的协程和gc垃圾回收特性的确会提高程序的开发效率。但是毕竟是一门新语言，如果对于它的机制不了解，用起来可能会蹦出各种潘多拉盒子。今天就讲讲我在项目中用到的sync包的Pool类的使用，以免大家混淆使用。</p>
-<p>众所周知，go是自动垃圾回收的(garbage collector)，这大大减少了程序编程负担。但gc是一把双刃剑，带来了编程的方便但同时也增加了运行时开销，使用不当甚至会严重影响程序的性能。因此性能要求高的场景不能任意产生太多的垃圾（有gc但又不能完全依赖它挺恶心的），如何解决呢？那就是要重用对象了，我们可以简单的使用一个chan把这些可重用的对象缓存起来，但如果很多goroutine竞争一个chan性能肯定是问题…..由于golang团队认识到这个问题普遍存在，为了避免大家重造车轮，因此官方统一出了一个包Pool。但为什么放到sync包里面也是有的迷惑的，先不讨论这个问题。</p>
-        
-          <a class="article-more-a" href="/2017/07/11/go-sync-pool/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/11/go-sync-pool/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-go-null-struct-optimize" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/10/go-null-struct-optimize/">Golang 优化之路——空结构</a>
-    </h1>
-  
-
-        
-        <a href="/2017/07/10/go-null-struct-optimize/" class="archive-article-date">
-  	<time datetime="2017-07-10T02:57:04.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-10</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>空结构 优化</p>
-<p>Golang 内置了 hashmap 类型。编码的过程中 hashset 也是很常用的一种数据结构。我们如何使用内置的 hashmap 来封装一个高效的 hashset？</p>
-        
-          <a class="article-more-a" href="/2017/07/10/go-null-struct-optimize/#more">more >></a>
-        
-      
-
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
       
     </div>
     <div class="article-info article-info-index">
@@ -292,129 +260,85 @@
       
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/10/go-null-struct-optimize/">展开全文 >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://aixgl.com/2017/07/26/go-flag/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
 
-
-
-
-
   
-    <article id="post-article1-post" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
+<nav id="article-nav">
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/10/article1-post/">golang对共享内存的操作</a>
-    </h1>
   
-
-        
-        <a href="/2017/07/10/article1-post/" class="archive-article-date">
-  	<time datetime="2017-07-10T01:48:49.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-10</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>不同进程间的内存是互相独立的，没办法直接互相操作对方内的数据，而共享内存则是靠操作系统提供的内存映射机制，让不同进程的一块地址空间映射到同一个虚拟内存区域上，使不同的进程可以操作到一块共用的内存块。共享内存是效率最高的进程间通讯机制，因为数据不需要在内核和程序之间复制。</p>
-<p>共享内存用到的是系统提供的mmap函数，它可以将一个文件映射到虚拟内存的一个区域中，程序使用指针引用这个区域，对这个内存区域的操作会被回写到文件上，其函数原型如下：</p>
-        
-          <a class="article-more-a" href="/2017/07/10/article1-post/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/10/article1-post/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
+    <a href="/2017/07/11/go-sync-pool/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">golang 标准官方包的sync.Pool使用和适用场景分析</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
 
 
 
 
 
   
-    <article id="post-hello-world" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/08/hello-world/">hexo</a>
-    </h1>
   
 
-        
-        <a href="/2017/07/08/hello-world/" class="archive-article-date">
-  	<time datetime="2017-07-08T08:21:02.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-08</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/08/hello-world/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
   
+
   
 
 
@@ -437,8 +361,8 @@
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
