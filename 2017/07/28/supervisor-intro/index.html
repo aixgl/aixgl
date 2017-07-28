@@ -6,18 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://aixgl.com">
-  <title>golang对共享内存的操作 | Aixgl-艾辛阁</title>
+  <title>Supervisor 使用设置 supervisor-intro | Aixgl-艾辛阁</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="不同进程间的内存是互相独立的，没办法直接互相操作对方内的数据，而共享内存则是靠操作系统提供的内存映射机制，让不同进程的一块地址空间映射到同一个虚拟内存区域上，使不同的进程可以操作到一块共用的内存块。共享内存是效率最高的进程间通讯机制，因为数据不需要在内核和程序之间复制。 共享内存用到的是系统提供的mmap函数，它可以将一个文件映射到虚拟内存的一个区域中，程序使用指针引用这个区域，对这个内存区域的操">
+  <meta name="description" content="Supervisor是一个 Python 开发的 client/server 系统，可以管理和监控类 UNIX 操作系统上面的进程。它可以同时启动，关闭多个进程，使用起来特别的方便。">
+<meta name="keywords" content="tool,supervisor使用,supervisor设置">
 <meta property="og:type" content="article">
-<meta property="og:title" content="golang对共享内存的操作">
-<meta property="og:url" content="http://aixgl.com/2017/07/10/article1-post/index.html">
+<meta property="og:title" content="Supervisor 使用设置 supervisor-intro">
+<meta property="og:url" content="http://aixgl.com/2017/07/28/supervisor-intro/index.html">
 <meta property="og:site_name" content="Aixgl-艾辛阁">
-<meta property="og:description" content="不同进程间的内存是互相独立的，没办法直接互相操作对方内的数据，而共享内存则是靠操作系统提供的内存映射机制，让不同进程的一块地址空间映射到同一个虚拟内存区域上，使不同的进程可以操作到一块共用的内存块。共享内存是效率最高的进程间通讯机制，因为数据不需要在内核和程序之间复制。 共享内存用到的是系统提供的mmap函数，它可以将一个文件映射到虚拟内存的一个区域中，程序使用指针引用这个区域，对这个内存区域的操">
-<meta property="og:updated_time" content="2017-07-10T02:55:32.000Z">
+<meta property="og:description" content="Supervisor是一个 Python 开发的 client/server 系统，可以管理和监控类 UNIX 操作系统上面的进程。它可以同时启动，关闭多个进程，使用起来特别的方便。">
+<meta property="og:updated_time" content="2017-07-28T06:29:35.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="golang对共享内存的操作">
-<meta name="twitter:description" content="不同进程间的内存是互相独立的，没办法直接互相操作对方内的数据，而共享内存则是靠操作系统提供的内存映射机制，让不同进程的一块地址空间映射到同一个虚拟内存区域上，使不同的进程可以操作到一块共用的内存块。共享内存是效率最高的进程间通讯机制，因为数据不需要在内核和程序之间复制。 共享内存用到的是系统提供的mmap函数，它可以将一个文件映射到虚拟内存的一个区域中，程序使用指针引用这个区域，对这个内存区域的操">
+<meta name="twitter:title" content="Supervisor 使用设置 supervisor-intro">
+<meta name="twitter:description" content="Supervisor是一个 Python 开发的 client/server 系统，可以管理和监控类 UNIX 操作系统上面的进程。它可以同时启动，关闭多个进程，使用起来特别的方便。">
   
     <link rel="alternative" href="/atom.xml" title="Aixgl-艾辛阁" type="application/atom+xml">
   
@@ -153,140 +154,78 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-article1-post" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-supervisor-intro" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      golang对共享内存的操作
+      Supervisor 使用设置 supervisor-intro
     </h1>
   
 
         
-        <a href="/2017/07/10/article1-post/" class="archive-article-date">
-  	<time datetime="2017-07-10T01:48:49.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-10</time>
+        <a href="/2017/07/28/supervisor-intro/" class="archive-article-date">
+  	<time datetime="2017-07-28T05:54:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-28</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>不同进程间的内存是互相独立的，没办法直接互相操作对方内的数据，而共享内存则是靠操作系统提供的内存映射机制，让不同进程的一块地址空间映射到同一个虚拟内存区域上，使不同的进程可以操作到一块共用的内存块。共享内存是效率最高的进程间通讯机制，因为数据不需要在内核和程序之间复制。</p>
-<p>共享内存用到的是系统提供的mmap函数，它可以将一个文件映射到虚拟内存的一个区域中，程序使用指针引用这个区域，对这个内存区域的操作会被回写到文件上，其函数原型如下：</p>
-<a id="more"></a>
-<p>void <em>mmap(void </em>addr, size_t len, int prot, int flags, int fd, off_t offset);<br>参数fd为即将映射到进程空间的文件描述字，一般由open()返回，同时，fd可以指定为-1，此时须指定flags参数中的MAP_ANON，表明进行的是匿名映射（不涉及具体的文件名，避免了文件的创建及打开，很显然只能用于具有亲缘关系的进程间通信）。<br>len是映射到调用进程地址空间的字节数，它从被映射文件开头offset个字节开始算起。<br>prot参数指定共享内存的访问权限。可取如下几个值的或：PROT_READ（可读）,PROT_WRITE（可写）,PROT_EXEC（可执行）,PROT_NONE（不可访问）。<br>flags由以下几个常值指定：MAP_SHARED, MAP_PRIVATE, MAP_FIXED。其中，MAP_SHARED,MAP_PRIVATE必选其一，而MAP_FIXED则不推荐使用。 如果指定为MAP_SHARED，则对映射的内存所做的修改同样影响到文件。如果是MAP_PRIVATE，则对映射的内存所做的修改仅对该进程可见，对文件没有影响。<br>offset参数一般设为0，表示从文件头开始映射。<br>参数addr指定文件应被映射到进程空间的起始地址，一般被指定一个空指针，此时选择起始地址的任务留给内核来完成。函数的返回值为最后文件映射到进程空间的地址，进程可直接操作起始地址为该值的有效地址。<br>顺带介绍一下shm_open和shm_unlink两个函数：</p>
-<p>shm_open()函数<br>功能：    打开或创建一个共享内存区<br>头文件：    #include <sys mman.h=""><br>函数原形：    int shm_open(const char *name,int oflag,mode_t mode);<br>返回值：    成功返回0，出错返回-1<br>参数：<br>    name    共享内存区的名字<br>    oflag    标志位<br>    mode    权限位<br>参数解释：oflag参数必须含有O_RDONLY和O_RDWR标志，还可以指定如下标志：O_CREAT,O_EXCL或O_TRUNC.mode参数指定权限位，<br>它指定O_CREAT标志的前提下使用。shm_open的返回值是一个整数描述字，它随后用作mmap的第五个参数。</sys></p>
-<p>shm_unlink()函数<br>功能：    删除一个共享内存区<br>头文件：    #include <sys mman.h=""><br>函数原形：    int shm_unlink(const char *name);<br>参数：     name    共享内存区的名字<br>返回值：    成功返回0，出错返回-1<br>shm_unlink函数删除一个共享内存区对象的名字，删除一个名字仅仅防止后续的open,mq_open或sem_open调用取得成功。</sys></p>
-<p>可以参考此文章的介绍来进一步了解mmap等函数：<a href="http://www.cnblogs.com/polestar/archive/2012/04/23/2466022.html" target="_blank" rel="external">http://www.cnblogs.com/polestar/archive/2012/04/23/2466022.html</a></p>
-<p>可以利用golang调用cgo的方法实现c中的mmap。实验分为读和写两个程序，这样我们可以观察到读进程可以读到写进程写入共享内存的信息。</p>
-<p>shm_writer.go代码示例：</p>
-<pre><code>package main
+        <p>Supervisor是一个 Python 开发的 client/server 系统，可以管理和监控类 UNIX 操作系统上面的进程。它可以同时启动，关闭多个进程，使用起来特别的方便。<br><a id="more"></a></p>
+<h2 id="组成部分"><a href="#组成部分" class="headerlink" title="组成部分"></a>组成部分</h2><p>supervisor 主要由两部分组成：</p>
+<p>supervisord(server 部分)：主要负责管理子进程，响应客户端命令以及日志的输出等；</p>
+<p>supervisorctl(client 部分)：命令行客户端，用户可以通过它与不同的 supervisord 进程联系，获取子进程的状态等。</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>可以直接使用 pip 安装：</p>
+<pre><code>sudo pip install supervisor
+</code></pre><p>如果是 Ubuntu 系统，也可以使用 apt-get</p>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>安装完成之后，可以运行 echo_supervisord_conf 生成默认的配置文件：</p>
+<pre><code>echo_supervisord_conf &gt; supervisord.conf
+</code></pre><p>然后可以通过 supervisord 命令启动 supervisord.</p>
+<pre><code>$ ps aux | grep super
+vagrant   1800  0.0  2.4  53680 12140 ?        Ss   06:33   0:00 /usr/bin/python /usr/bin/supervisord
+vagrant   1813  0.0  0.1  10432   668 pts/0    S+   06:37   0:00 grep --color=auto super
+</code></pre><p>我们可以看到 supervisord 已经被启动了， 然后进入 supervisorctl 的 shell 界面。</p>
+<pre><code>$ supervisorctl
+supervisor&gt; status
+supervisor&gt;
+</code></pre><p>由于目前没有添加任何需要管理的进程，所以 status 没有输出人和结果，接下来我们添加一个需要管理的进程 (以启动一个 celery 的 worker 为例)：</p>
+<pre><code>[program:celeryd]
+command=celery worker --app=task -l info ; 启动命令
+stdout_logfile=/var/log/supervisor/celeryd_out.log ; stdout 日志输出位置
+stderr_logfile=/var/log/supervisor/celeryd_err.log ; stderr 日志输出位置
+autostart=true ; 在 supervisord 启动的时候自动启动
+autorestart=true ; 程序异常退出后自动重启
+startsecs=10 ; 启动 10 秒后没有异常退出，就当作已经正常启动
+</code></pre><p>然后运行以下命令更新配置并启动进程：</p>
+<pre><code>$ supervisorctl reread (只更新配置文件)
+celeryd: available
 
-/*
-#cgo linux LDFLAGS: -lrt
+$ supervisorctl update (只启动有改动的进程)
+celeryd: added process group
 
-#include &lt;fcntl.h&gt;
-#include &lt;unistd.h&gt;
-#include &lt;sys/mman.h&gt;
-
-#define FILE_MODE (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)
-
-int my_shm_new(char *name) {
-    shm_unlink(name);
-    return shm_open(name, O_RDWR|O_CREAT|O_EXCL, FILE_MODE);
-}
-*/
-import &quot;C&quot;
-import (
-    &quot;fmt&quot;
-    &quot;unsafe&quot;
-)
-
-const SHM_NAME = &quot;my_shm&quot;
-const SHM_SIZE = 4 * 1000 * 1000 * 1000
-
-type MyData struct {
-    Col1 int
-    Col2 int
-    Col3 int
-}
-
-func main() {
-    fd, err := C.my_shm_new(C.CString(SHM_NAME))
-    if err != nil {
-        fmt.Println(err)
-        return
-    }
-
-    C.ftruncate(fd, SHM_SIZE)
-
-    ptr, err := C.mmap(nil, SHM_SIZE, C.PROT_READ|C.PROT_WRITE, C.MAP_SHARED, fd, 0)
-    if err != nil {
-        fmt.Println(err)
-        return
-    }
-    C.close(fd)
-
-    data := (*MyData)(unsafe.Pointer(ptr))
-
-    data.Col1 = 100
-    data.Col2 = 876
-    data.Col3 = 8021
-}
-shm_reader.go代码示例：
-package main
-
-/*
-#cgo linux LDFLAGS: -lrt
-
-#include &lt;fcntl.h&gt;
-#include &lt;unistd.h&gt;
-#include &lt;sys/mman.h&gt;
-
-#define FILE_MODE (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)
-
-int my_shm_open(char *name) {
-    return shm_open(name, O_RDWR, FILE_MODE);
-}
-*/
-import &quot;C&quot;
-import (
-    &quot;fmt&quot;
-    &quot;unsafe&quot;
-)
-
-const SHM_NAME = &quot;my_shm&quot;
-const SHM_SIZE = 4 * 1000 * 1000 * 1000
-
-type MyData struct {
-    Col1 int
-    Col2 int
-    Col3 int
-}
-
-func main() {
-    fd, err := C.my_shm_open(C.CString(SHM_NAME))
-    if err != nil {
-        fmt.Println(err)
-        return
-    }
-
-    ptr, err := C.mmap(nil, SHM_SIZE, C.PROT_READ|C.PROT_WRITE, C.MAP_SHARED, fd, 0)
-    if err != nil {
-        fmt.Println(err)
-        return
-    }
-    C.close(fd)
-
-    data := (*MyData)(unsafe.Pointer(ptr))
-
-    fmt.Println(data)
-}
-</code></pre><p>上面的程序映射了一块4G的虚拟内存，用来证明mmap没有实际占用4G内存，而是用到了虚拟内存。shm_writer创建好共享内存以后，往内存区域写入了一个结构体，shm_reader则读出一个结构体。</p>
-<p>上面代码中还用到一个cgo的技巧，像shm_open和mmap函数在错误时会返回errno，如果我们在go中使用多返回值语法，cgo会自己把错误码转换成错误信息，很方便的功能。</p>
-
+$ supervisorctl status
+celeryd                          RUNNING    pid 1919, uptime 0:00:18
+</code></pre><p>我们看到 celery worker 已经被成功启动了。你可以使用不同的命令来控制进程的启动和关闭。</p>
+<pre><code>$ supervisorctl stop celeryd
+celeryd: stopped
+$ supervisorctl start celeryd
+celeryd: started
+$ supervisorctl restart celeryd
+celeryd: stopped
+celeryd: started
+</code></pre><p>把所有的配置文件都放在 supervisord.conf 并不是个好主意，一旦管理的进程过多，就很麻烦。所以一般都会 新建一个目录来专门放置进程的配置文件，然后通过 include 的方式来获取这些配置信息</p>
+<pre><code>[include]
+files = /etc/supervisor/conf.d/*.conf
+</code></pre><p>然后在目录 /etc/supervisor/conf.d 下新建一个配置文件 celery.conf, 配置信息与上面的一致，效果 是一样的。</p>
+<h2 id="命令详解"><a href="#命令详解" class="headerlink" title="命令详解"></a>命令详解</h2><pre><code>supervisord: 初始启动Supervisord，启动、管理配置中设置的进程;
+supervisorctl stop(start, restart) xxx，停止（启动，重启）某一个进程(xxx);
+supervisorctl reread: 只载入最新的配置文件, 并不重启任何进程;
+supervisorctl reload: 载入最新的配置文件，停止原来的所有进程并按新的配置启动管理所有进程;
+supervisorctl update: 根据最新的配置文件，启动新配置或有改动的进程，配置没有改动的进程不会受影响而重启;
+</code></pre>
       
 
       
@@ -315,6 +254,25 @@ func main() {
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">tool</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">supervisor使用</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">supervisor设置</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 
       
@@ -365,7 +323,7 @@ func main() {
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=http://aixgl.com/2017/07/10/article1-post/" alt="微信分享二维码">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://aixgl.com/2017/07/28/supervisor-intro/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -379,18 +337,9 @@ func main() {
   
 <nav id="article-nav">
   
-    <a href="/2017/07/10/go-null-struct-optimize/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          Golang 优化之路——空结构
-        
-      </div>
-    </a>
   
-  
-    <a href="/2017/05/01/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">hexo</div>
+    <a href="/2017/07/27/go-socket-coding/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Go语言TCP Socket编程  go-socket-coding</div>
       <i class="icon-circle-right"></i>
     </a>
   

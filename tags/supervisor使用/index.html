@@ -6,18 +6,14 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://aixgl.com">
-  <title>golang对共享内存的操作 | Aixgl-艾辛阁</title>
+  <title>Tag: supervisor使用 | Aixgl-艾辛阁</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="不同进程间的内存是互相独立的，没办法直接互相操作对方内的数据，而共享内存则是靠操作系统提供的内存映射机制，让不同进程的一块地址空间映射到同一个虚拟内存区域上，使不同的进程可以操作到一块共用的内存块。共享内存是效率最高的进程间通讯机制，因为数据不需要在内核和程序之间复制。 共享内存用到的是系统提供的mmap函数，它可以将一个文件映射到虚拟内存的一个区域中，程序使用指针引用这个区域，对这个内存区域的操">
-<meta property="og:type" content="article">
-<meta property="og:title" content="golang对共享内存的操作">
-<meta property="og:url" content="http://aixgl.com/2017/07/10/article1-post/index.html">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Aixgl-艾辛阁">
+<meta property="og:url" content="http://aixgl.com/tags/supervisor使用/index.html">
 <meta property="og:site_name" content="Aixgl-艾辛阁">
-<meta property="og:description" content="不同进程间的内存是互相独立的，没办法直接互相操作对方内的数据，而共享内存则是靠操作系统提供的内存映射机制，让不同进程的一块地址空间映射到同一个虚拟内存区域上，使不同的进程可以操作到一块共用的内存块。共享内存是效率最高的进程间通讯机制，因为数据不需要在内核和程序之间复制。 共享内存用到的是系统提供的mmap函数，它可以将一个文件映射到虚拟内存的一个区域中，程序使用指针引用这个区域，对这个内存区域的操">
-<meta property="og:updated_time" content="2017-07-10T02:55:32.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="golang对共享内存的操作">
-<meta name="twitter:description" content="不同进程间的内存是互相独立的，没办法直接互相操作对方内的数据，而共享内存则是靠操作系统提供的内存映射机制，让不同进程的一块地址空间映射到同一个虚拟内存区域上，使不同的进程可以操作到一块共用的内存块。共享内存是效率最高的进程间通讯机制，因为数据不需要在内核和程序之间复制。 共享内存用到的是系统提供的mmap函数，它可以将一个文件映射到虚拟内存的一个区域中，程序使用指针引用这个区域，对这个内存区域的操">
+<meta name="twitter:title" content="Aixgl-艾辛阁">
   
     <link rel="alternative" href="/atom.xml" title="Aixgl-艾辛阁" type="application/atom+xml">
   
@@ -153,260 +149,68 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-article1-post" class="article article-type-post " itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
+            
   
-    <h1 class="article-title" itemprop="name">
-      golang对共享内存的操作
+  
+    
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2017" class="archive-year">2017</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2017/07/28/supervisor-intro/" class="archive-article-date">
+  	<time datetime="2017-07-28T05:54:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-28</time>
+</a>
+        </div>
+    	 
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2017/07/28/supervisor-intro/">Supervisor 使用设置 supervisor-intro</a>
     </h1>
   
 
-        
-        <a href="/2017/07/10/article1-post/" class="archive-article-date">
-  	<time datetime="2017-07-10T01:48:49.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-10</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>不同进程间的内存是互相独立的，没办法直接互相操作对方内的数据，而共享内存则是靠操作系统提供的内存映射机制，让不同进程的一块地址空间映射到同一个虚拟内存区域上，使不同的进程可以操作到一块共用的内存块。共享内存是效率最高的进程间通讯机制，因为数据不需要在内核和程序之间复制。</p>
-<p>共享内存用到的是系统提供的mmap函数，它可以将一个文件映射到虚拟内存的一个区域中，程序使用指针引用这个区域，对这个内存区域的操作会被回写到文件上，其函数原型如下：</p>
-<a id="more"></a>
-<p>void <em>mmap(void </em>addr, size_t len, int prot, int flags, int fd, off_t offset);<br>参数fd为即将映射到进程空间的文件描述字，一般由open()返回，同时，fd可以指定为-1，此时须指定flags参数中的MAP_ANON，表明进行的是匿名映射（不涉及具体的文件名，避免了文件的创建及打开，很显然只能用于具有亲缘关系的进程间通信）。<br>len是映射到调用进程地址空间的字节数，它从被映射文件开头offset个字节开始算起。<br>prot参数指定共享内存的访问权限。可取如下几个值的或：PROT_READ（可读）,PROT_WRITE（可写）,PROT_EXEC（可执行）,PROT_NONE（不可访问）。<br>flags由以下几个常值指定：MAP_SHARED, MAP_PRIVATE, MAP_FIXED。其中，MAP_SHARED,MAP_PRIVATE必选其一，而MAP_FIXED则不推荐使用。 如果指定为MAP_SHARED，则对映射的内存所做的修改同样影响到文件。如果是MAP_PRIVATE，则对映射的内存所做的修改仅对该进程可见，对文件没有影响。<br>offset参数一般设为0，表示从文件头开始映射。<br>参数addr指定文件应被映射到进程空间的起始地址，一般被指定一个空指针，此时选择起始地址的任务留给内核来完成。函数的返回值为最后文件映射到进程空间的地址，进程可直接操作起始地址为该值的有效地址。<br>顺带介绍一下shm_open和shm_unlink两个函数：</p>
-<p>shm_open()函数<br>功能：    打开或创建一个共享内存区<br>头文件：    #include <sys mman.h=""><br>函数原形：    int shm_open(const char *name,int oflag,mode_t mode);<br>返回值：    成功返回0，出错返回-1<br>参数：<br>    name    共享内存区的名字<br>    oflag    标志位<br>    mode    权限位<br>参数解释：oflag参数必须含有O_RDONLY和O_RDWR标志，还可以指定如下标志：O_CREAT,O_EXCL或O_TRUNC.mode参数指定权限位，<br>它指定O_CREAT标志的前提下使用。shm_open的返回值是一个整数描述字，它随后用作mmap的第五个参数。</sys></p>
-<p>shm_unlink()函数<br>功能：    删除一个共享内存区<br>头文件：    #include <sys mman.h=""><br>函数原形：    int shm_unlink(const char *name);<br>参数：     name    共享内存区的名字<br>返回值：    成功返回0，出错返回-1<br>shm_unlink函数删除一个共享内存区对象的名字，删除一个名字仅仅防止后续的open,mq_open或sem_open调用取得成功。</sys></p>
-<p>可以参考此文章的介绍来进一步了解mmap等函数：<a href="http://www.cnblogs.com/polestar/archive/2012/04/23/2466022.html" target="_blank" rel="external">http://www.cnblogs.com/polestar/archive/2012/04/23/2466022.html</a></p>
-<p>可以利用golang调用cgo的方法实现c中的mmap。实验分为读和写两个程序，这样我们可以观察到读进程可以读到写进程写入共享内存的信息。</p>
-<p>shm_writer.go代码示例：</p>
-<pre><code>package main
+        <div class="article-info info-on-right">
+          
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">tool</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">supervisor使用</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">supervisor设置</a>
+        		</li>
+      		
+		</ul>
+	</div>
 
-/*
-#cgo linux LDFLAGS: -lrt
+          
 
-#include &lt;fcntl.h&gt;
-#include &lt;unistd.h&gt;
-#include &lt;sys/mman.h&gt;
-
-#define FILE_MODE (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)
-
-int my_shm_new(char *name) {
-    shm_unlink(name);
-    return shm_open(name, O_RDWR|O_CREAT|O_EXCL, FILE_MODE);
-}
-*/
-import &quot;C&quot;
-import (
-    &quot;fmt&quot;
-    &quot;unsafe&quot;
-)
-
-const SHM_NAME = &quot;my_shm&quot;
-const SHM_SIZE = 4 * 1000 * 1000 * 1000
-
-type MyData struct {
-    Col1 int
-    Col2 int
-    Col3 int
-}
-
-func main() {
-    fd, err := C.my_shm_new(C.CString(SHM_NAME))
-    if err != nil {
-        fmt.Println(err)
-        return
-    }
-
-    C.ftruncate(fd, SHM_SIZE)
-
-    ptr, err := C.mmap(nil, SHM_SIZE, C.PROT_READ|C.PROT_WRITE, C.MAP_SHARED, fd, 0)
-    if err != nil {
-        fmt.Println(err)
-        return
-    }
-    C.close(fd)
-
-    data := (*MyData)(unsafe.Pointer(ptr))
-
-    data.Col1 = 100
-    data.Col2 = 876
-    data.Col3 = 8021
-}
-shm_reader.go代码示例：
-package main
-
-/*
-#cgo linux LDFLAGS: -lrt
-
-#include &lt;fcntl.h&gt;
-#include &lt;unistd.h&gt;
-#include &lt;sys/mman.h&gt;
-
-#define FILE_MODE (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)
-
-int my_shm_open(char *name) {
-    return shm_open(name, O_RDWR, FILE_MODE);
-}
-*/
-import &quot;C&quot;
-import (
-    &quot;fmt&quot;
-    &quot;unsafe&quot;
-)
-
-const SHM_NAME = &quot;my_shm&quot;
-const SHM_SIZE = 4 * 1000 * 1000 * 1000
-
-type MyData struct {
-    Col1 int
-    Col2 int
-    Col3 int
-}
-
-func main() {
-    fd, err := C.my_shm_open(C.CString(SHM_NAME))
-    if err != nil {
-        fmt.Println(err)
-        return
-    }
-
-    ptr, err := C.mmap(nil, SHM_SIZE, C.PROT_READ|C.PROT_WRITE, C.MAP_SHARED, fd, 0)
-    if err != nil {
-        fmt.Println(err)
-        return
-    }
-    C.close(fd)
-
-    data := (*MyData)(unsafe.Pointer(ptr))
-
-    fmt.Println(data)
-}
-</code></pre><p>上面的程序映射了一块4G的虚拟内存，用来证明mmap没有实际占用4G内存，而是用到了虚拟内存。shm_writer创建好共享内存以后，往内存区域写入了一个结构体，shm_reader则读出一个结构体。</p>
-<p>上面代码中还用到一个cgo的技巧，像shm_open和mmap函数在错误时会返回errno，如果我们在go中使用多返回值语法，cgo会自己把错误码转换成错误信息，很方便的功能。</p>
-
-      
-
-      
-        <div class="page-reward">
-          <a href="javascript:;" class="page-reward-btn tooltip-top">
-            <div class="tooltip tooltip-east">
-            <span class="tooltip-item">
-              赏
-            </span>
-            <span class="tooltip-content">
-              <span class="tooltip-text">
-                <span class="tooltip-inner">
-                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
-                  <div class="reward-box">
-                    
-                    
-                  </div>
-                </span>
-              </span>
-            </span>
-          </div>
-          </a>
         </div>
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-
-      
-        
-<div class="share-btn share-icons tooltip-left">
-  <div class="tooltip tooltip-east">
-    <span class="tooltip-item">
-      <a href="javascript:;" class="share-sns share-outer">
-        <i class="icon icon-share"></i>
-      </a>
-    </span>
-    <span class="tooltip-content">
-      <div class="share-wrap">
-        <div class="share-icons">
-          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
-            <i class="icon icon-weibo"></i>
-          </a>
-          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
-            <i class="icon icon-weixin"></i>
-          </a>
-          <a class="qq share-sns" href="javascript:;" data-type="qq">
-            <i class="icon icon-qq"></i>
-          </a>
-          <a class="douban share-sns" href="javascript:;" data-type="douban">
-            <i class="icon icon-douban"></i>
-          </a>
-          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
-            <i class="icon icon-qzone"></i>
-          </a>
-          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
-            <i class="icon icon-facebook"></i>
-          </a>
-          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
-            <i class="icon icon-twitter"></i>
-          </a>
-          <a class="google share-sns" href="javascript:;" data-type="google">
-            <i class="icon icon-google"></i>
-          </a>
-        </div>
-      </div>
-    </span>
-  </div>
-</div>
-
-<div class="page-modal wx-share js-wx-box">
-    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <p>扫一扫，分享到微信</p>
-    <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=http://aixgl.com/2017/07/10/article1-post/" alt="微信分享二维码">
-    </div>
-</div>
-
-<div class="mask js-mask"></div>
-      
-      <div class="clearfix"></div>
-    </div>
+        <div class="clearfix"></div>
+    </header>
   </div>
 </article>
-
-  
-<nav id="article-nav">
-  
-    <a href="/2017/07/10/go-null-struct-optimize/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          Golang 优化之路——空结构
-        
-      </div>
-    </a>
   
   
-    <a href="/2017/05/01/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">hexo</div>
-      <i class="icon-circle-right"></i>
-    </a>
-  
-</nav>
-
-
-
-
-
-  
-  
+    </div></section>
   
 
-  
-
-  
+    
 
 
           </div>
@@ -429,9 +233,9 @@ func main() {
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: true,
+		isPost: false,
 		isArchive: false,
-		isTag: false,
+		isTag: true,
 		isCategory: false,
 		open_in_new: false,
 		root: "/",
